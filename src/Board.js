@@ -28,8 +28,7 @@ import "./Board.css";
  **/
 
 const Board = ({ nrows = 5, ncols =5, chanceLightStartsOn = 0.20}) => {
-  const [board, setBoard] = useState(createBoard());
-
+  const [board, setBoard] = useState(null);
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
   const createBoard = () => {
     let initialBoard = [];
@@ -37,16 +36,18 @@ const Board = ({ nrows = 5, ncols =5, chanceLightStartsOn = 0.20}) => {
     for (let y = 0; y < nrows; y++){
       let newRow = [];
       for (let x = 0; x < ncols; x++){
-        newRow.push(Math.floor(Math.random() < chanceLightStartsOn));
+        newRow.push(Math.random() < chanceLightStartsOn);
       }
       initialBoard.push(newRow);
     }
-    return initialBoard;
+    setBoard(initialBoard);
   }
+  
+  createBoard();
 
   const hasWon = () => {
     // TODO: check the board in state to determine whether the player has won.
-    board.forEach(newRow => newRow.forEach(cell => !Cell));
+    board.every(newRow => newRow.every(cell => !Cell));
   }
 
   function flipCellsAround(coord) {
@@ -82,6 +83,7 @@ const Board = ({ nrows = 5, ncols =5, chanceLightStartsOn = 0.20}) => {
   }
 
   // make table board
+  const makeHTMLBoard = () => {
   let tableBoard = [];
   for (let y = 0; y < nrows; y++) {
     let newRow = [];
@@ -98,9 +100,11 @@ const Board = ({ nrows = 5, ncols =5, chanceLightStartsOn = 0.20}) => {
     console.log(newRow);
     tableBoard.push(<tr key={`newRow${y}`}>{newRow}</tr>)
   }
+  return tableBoard;
+}
   return (
-    <table className="Board">
-      <tbody>{tableBoard}</tbody>
+    board && <table className="Board">
+      <tbody>{makeHTMLBoard}</tbody>
     </table>
   );
 }
