@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import Cell from "./Cell";
-import "./Board.css";
+import React, { useState } from 'react';
+import Cell from './Cell';
+import './Board.css';
 
 /** Game board of Lights out.
  *
@@ -27,86 +27,84 @@ import "./Board.css";
  *
  **/
 
-const Board = ({ nrows = 5, ncols =5, chanceLightStartsOn = 0.20}) => {
-  const [board, setBoard] = useState(null);
-  /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
-  const createBoard = () => {
-    let initialBoard = [];
-    // TODO: create array-of-arrays of true/false values
-    for (let y = 0; y < nrows; y++){
-      let newRow = [];
-      for (let x = 0; x < ncols; x++){
-        newRow.push(Math.random() < chanceLightStartsOn);
-      }
-      initialBoard.push(newRow);
-    }
-    setBoard(initialBoard);
-  }
-  
-  createBoard();
+const Board = ({ nrows = 5, ncols = 5, chanceLightStartsOn = 0.2 }) => {
+	const [ board, setBoard ] = useState([]);
+	/** create a board nrows high/ncols wide, each cell randomly lit or unlit */
+	const createBoard = () => {
+		let initialBoard = [];
+		// TODO: create array-of-arrays of true/false values
+		for (let y = 0; y < nrows; y++) {
+			let newRow = [];
+			for (let x = 0; x < ncols; x++) {
+				newRow.push(Math.random() < chanceLightStartsOn);
+			}
+			initialBoard.push(newRow);
+		}
+		setBoard(initialBoard);
+    console.log(initialBoard)
+	};
 
-  const hasWon = () => {
-    // TODO: check the board in state to determine whether the player has won.
-    board.every(newRow => newRow.every(cell => !Cell));
-  }
+	// createBoard();
 
-  function flipCellsAround(coord) {
-    setBoard(oldBoard => {
-      const [y, x] = coord.split("-").map(Number);
+	const hasWon = () => {
+		// TODO: check the board in state to determine whether the player has won.
+		board.every((newRow) => newRow.every((cell) => !Cell));
+	};
 
-      const flipCell = (y, x, boardCopy) => {
-        // if this coord is actually on board, flip it
+	function flipCellsAround(coord) {
+		setBoard((oldBoard) => {
+			const [ y, x ] = coord.split('-').map(Number);
 
-        if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
-          boardCopy[y][x] = !boardCopy[y][x];
-        }
-      };
+			const flipCell = (y, x, boardCopy) => {
+				// if this coord is actually on board, flip it
 
-      // TODO: Make a (deep) copy of the oldBoard
-        let boardCopy= oldBoard.map(newRow => [...newRow]);
-      // TODO: in the copy, flip this cell and the cells around it
-      // Obtained this info from https://codesandbox.io/s/react-lights-out-game-omfyt?file=/src/Board.js:1802-2003
-      flipCell(y, x); // flip initial cell
-      flipCell(y, x - 1); // flip left cell
-      flipCell(y, x + 1); // flip right cell
-      flipCell(y + 1, x); // flip cell above
-      flipCell(y - 1, x); // flip cell below
+				if (x >= 0 && x < ncols && y >= 0 && y < nrows) {
+					boardCopy[y][x] = !boardCopy[y][x];
+				}
+			};
 
-      // TODO: return the copy
-      return boardCopy;
-    });
-  }
+			// TODO: Make a (deep) copy of the oldBoard
+			let boardCopy = oldBoard.map((newRow) => [ ...newRow ]);
+			// TODO: in the copy, flip this cell and the cells around it
+			// Obtained this info from https://codesandbox.io/s/react-lights-out-game-omfyt?file=/src/Board.js:1802-2003
+			flipCell(y, x); // flip initial cell
+			flipCell(y, x - 1); // flip left cell
+			flipCell(y, x + 1); // flip right cell
+			flipCell(y + 1, x); // flip cell above
+			flipCell(y - 1, x); // flip cell below
 
-  // if the game is won, just show a winning msg & render nothing else
-  if(hasWon()) {
-    return <div> You Won The Game!</div>
-  }
+			// TODO: return the copy
+			return boardCopy;
+		});
+	}
 
-  // make table board
-  const makeHTMLBoard = () => {
-  let tableBoard = [];
-  for (let y = 0; y < nrows; y++) {
-    let newRow = [];
-    for (let x = 0; x < ncols; x++){
-      let coord = `${x} + ${y}`;
-      newRow.push(
-        <Cell
-        key={coord}
-        litCell={board[x][y]}
-        flipping={flipCellsAround(coord)}
-        />
-      );
-    }
-    console.log(newRow);
-    tableBoard.push(<tr key={`newRow${y}`}>{newRow}</tr>)
-  }
-  return tableBoard;
-}
-  return (
-    board && <table className="Board">
-      <tbody>{makeHTMLBoard}</tbody>
-    </table>
-  );
-}
+	// if the game is won, just show a winning msg & render nothing else
+	// if (hasWon()) {
+	// 	return <div> You Won The Game!</div>;
+	// }
+
+	// make table board
+	const makeHTMLBoard = () => {
+		let tableBoard = [];
+		for (let y = 0; y < nrows; y++) {
+			let newRow = [];
+			for (let x = 0; x < ncols; x++) {
+				let coord = `${x} + ${y}`;
+				newRow.push(<Cell key={coord} litCell={board[x][y]} flipping={flipCellsAround(coord)} />);
+			}
+			console.log(newRow);
+			tableBoard.push(<tr key={`newRow${y}`}>{newRow}</tr>);
+		}
+		return tableBoard;
+	};
+
+	return (
+		board && board.length > 0 && (
+			<table className="Board">
+				{/* <tbody>{makeHTMLBoard()}</tbody> */}
+			</table>
+		)
+	);
+};
 
 export default Board;
