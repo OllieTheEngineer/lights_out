@@ -39,9 +39,9 @@ const Board = ({ nrows = 5, ncols = 5, chanceLightStartsOn = 0.2 }) => {
 				newRow.push(Math.random() < chanceLightStartsOn);
 			}
 			initialBoard.push(newRow);
+      initialBoard = createBoard
 		}
-		setBoard(initialBoard);
-    console.log(initialBoard)
+		return createBoard;
 	};
 
 	// createBoard();
@@ -79,9 +79,9 @@ const Board = ({ nrows = 5, ncols = 5, chanceLightStartsOn = 0.2 }) => {
 	}
 
 	// if the game is won, just show a winning msg & render nothing else
-	// if (hasWon()) {
-	// 	return <div> You Won The Game!</div>;
-	// }
+	if (hasWon()) {
+		return <div> You Won The Game!</div>;
+	}
 
 	// make table board
 	const makeHTMLBoard = () => {
@@ -99,12 +99,10 @@ const Board = ({ nrows = 5, ncols = 5, chanceLightStartsOn = 0.2 }) => {
 	};
 
 	return (
-		board && board.length > 0 && (
 			<table className="Board">
-				{/* <tbody>{makeHTMLBoard()}</tbody> */}
+				<tbody>{makeHTMLBoard()}</tbody>
 			</table>
 		)
-	);
 };
 
 export default Board;
